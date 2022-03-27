@@ -1,6 +1,9 @@
 # Spidey-Sense
 
+
+>> Python File using 'pygame' :
 Spidy is a tiny differential drive robot that moves to the point clicked by the mouse in a circular path.
 The path it traverses is PID controlled.
 
-My submission for Spider Week contest conducted by Spider R&D, NITT.
+>> ROS model
+The robot model of the differential drive robot is designed.
