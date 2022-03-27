@@ -1,0 +1,354 @@
+<?xml version="1.0"?>
+<robot name="bot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<!--
+	<material name="blue">
+    <color rgba="0.203125 0.23828125 0.28515625 1.0"/>
+  </material>
+  <material name="orange">
+    <color rgba="1.0 0.423529411765 0.0392156862745 1.0"/>
+
+  </material>
+  <material name="white">
+    <color rgba="1.0 1.0 1.0 1.0"/>
+  </material>
+--> 
+   <gazebo reference="link_load">
+    <material>Gazebo/PurpleGlow</material>
+  </gazebo>
+  <gazebo reference="link_left_wheel">
+    <material>Gazebo/WhiteGlow</material>
+  </gazebo>
+  <gazebo reference="link_right_wheel">
+    <material>Gazebo/WhiteGlow</material>
+  </gazebo>
+  <gazebo reference="link_chassis">
+    <material>Gazebo/Purple</material>
+  </gazebo>
+  <gazebo reference="link_balancer_front">
+    <material>Gazebo/Purple</material>
+  </gazebo>
+  <gazebo reference="link_balancer_rear">
+    <material>Gazebo/Purple</material>
+  </gazebo>
+  <gazebo reference="link_balancer_front_wheel">
+    <material>Gazebo/WhiteGlow</material>
+  </gazebo>
+  <gazebo reference="link_balancer_rear_wheel">
+    <material>Gazebo/WhiteGlow</material>
+  </gazebo>
+
+
+  <gazebo>
+    <plugin filename="libgazebo_ros_diff_drive.so" name="differential_drive_controller">
+      <alwaysOn>true</alwaysOn>
+      <updateRate>20</updateRate>
+      
+      <leftJoint>joint_left_wheel</leftJoint>
+      <rightJoint>joint_right_wheel</rightJoint>
+      
+      <wheelSeparation>0.8</wheelSeparation>
+      <wheelDiameter>0.4</wheelDiameter>
+      <torque>0.1</torque>
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <robotBaseFrame>link_chassis</robotBaseFrame>
+    </plugin>
+  </gazebo>
+
+
+<!--
+[ WARN] [1630424617.389609319]: The root link link_chassis has an inertia specified in the URDF, but KDL does not support a root link with an inertia.  As a workaround, you can add an extra dummy link to your URDF.
+-->
+
+<link name = "base_link">
+	<pose>0 0 0 0 0 0</pose>
+</link>
+<joint type = "fixed" name = "base_chassis_link">
+	<child link = "link_chassis"/>
+	<parent link = "base_link"/>
+</joint>
+
+<link name="link_chassis">	
+
+    <inertial>
+      <mass value="2"/>
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0.2"/>
+      <inertia ixx="0.108" ixy="0" ixz="0"
+       iyy="0.108" iyz="0" izz="0.00125"/>
+    </inertial>
+    
+    <collision name="chassis_collision">
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0.2"/>
+      <geometry>
+        <cylinder length="0.8" radius="0.05"/>
+      </geometry>
+    </collision>
+    
+    <visual>
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0.2"/>
+      <geometry>
+        <cylinder length="0.8" radius="0.05"/>
+      </geometry>
+
+    </visual>
+    
+  </link>
+
+
+<link name="link_load"> 
+    
+    <inertial>
+      <mass value="5"/>
+      <origin rpy="0 0 0" xyz="0 0 0.325"/>
+      <inertia ixx="0" ixy="0" ixz="0"
+               iyy="0" iyz="0" izz="0"/>
+    </inertial>
+    
+    <collision name="collision_load">
+    <origin rpy="0 0 0" xyz="0 0 0.325"/>
+      <geometry>
+        <box size ="0.5 0.8 0.15"/>
+      </geometry>
+    </collision>
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.325"/>
+      <geometry>
+        <box size ="0.5 0.8 0.15"/>
+      </geometry> 
+      
+    </visual>
+</link>
+
+<joint name="joint_load" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <child link="link_load"/>
+    <parent link="link_chassis"/>   
+</joint>
+
+
+<!--
+###################################
+####################################
+###################################
+-->  
+
+
+<link name="link_balancer_front"> 
+    
+    <inertial>
+      <mass value="0.5"/>
+      <origin rpy="0 0 0" xyz="0.225 0 0.15"/>
+      <inertia ixx="0" ixy="0" ixz="0"
+               iyy="0" iyz="0" izz="0"/>
+    </inertial>
+    
+    <collision name="collision_balancer_front">
+    <origin rpy="0 0 0" xyz="0.225 0 0.15"/>
+      <geometry>
+        <box size ="0.05 0.1 0.2"/>
+      </geometry>
+    </collision>
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0.225 0 0.15"/>
+      <geometry>
+        <box size ="0.05 0.1 0.2"/>
+      </geometry>
+    </visual>
+    
+</link>
+
+<joint name="joint_balancer_front" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <child link="link_balancer_front"/>
+    <parent link="link_chassis"/> 
+</joint>
+
+
+
+  <link name="link_balancer_front_wheel">
+  
+    <inertial>
+      <mass value="0.05"/>
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <inertia ixx="0.0001146" ixy="0" ixz="0"
+       iyy="0.0001146" iyz="0" izz="0.0000625"/>
+    </inertial>
+    
+    <collision name="link_balancer_front_wheel_collision">
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.02" radius="0.05"/>
+      </geometry>
+    </collision>
+    
+    <visual>
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.02" radius="0.05"/>
+      </geometry>
+    </visual>
+    
+  </link>  
+  
+  <joint name="joint_balancer_front_wheel" type="continuous">
+    <origin rpy="0 0 0" xyz="0.225 0 0.05"/>
+    <child link="link_balancer_front_wheel"/>
+    <parent link="link_chassis"/>
+    <axis rpy="0 0 0" xyz="0 0.05 0"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0.1" friction="0.1"/>
+  </joint>
+  
+  
+<!--
+###################################
+####################################
+###################################
+-->  
+  
+ 
+<link name="link_balancer_rear"> 
+    
+    <inertial>
+      <mass value="0.5"/>
+      <origin rpy="0 0 0" xyz="-0.225 0 0.15"/>
+      <inertia ixx="0" ixy="0" ixz="0"
+               iyy="0" iyz="0" izz="0"/>
+    </inertial>
+    
+    <collision name="collision_balancer_rear">
+    <origin rpy="0 0 0" xyz="-0.225 0 0.15"/>
+      <geometry>
+        <box size ="0.05 0.1 0.2"/>
+      </geometry>
+    </collision>
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.225 0 0.15"/>
+      <geometry>
+        <box size ="0.05 0.1 0.2"/>
+      </geometry>
+    </visual>
+</link>
+
+<joint name="joint_balancer_rear" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <child link="link_balancer_rear"/>
+    <parent link="link_chassis"/>   
+</joint>
+
+
+  <link name="link_balancer_rear_wheel">
+  
+    <inertial>
+      <mass value="0.05"/>
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <inertia ixx="0.0001146" ixy="0" ixz="0"
+       iyy="0.0001146" iyz="0" izz="0.0000625"/>
+    </inertial>
+    
+    <collision name="link_balancer_rear_wheel_collision">
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.02" radius="0.05"/>
+      </geometry>
+    </collision>
+    
+    <visual>
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.02" radius="0.05"/>
+      </geometry>
+    </visual>
+    
+  </link>
+  
+  
+  <joint name="joint_balancer_rear_wheel" type="continuous">
+    <origin rpy="0 0 0" xyz="-0.225 0 0.05"/>
+    <child link="link_balancer_rear_wheel"/>
+    <parent link="link_chassis"/>
+    <axis rpy="0 0 0" xyz="0 0.05 0"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0.1" friction="0.1"/>
+  </joint>
+  
+  
+ <!--
+###################################
+####################################
+###################################
+-->    
+  
+  <link name="link_right_wheel">
+  
+    <inertial>
+      <mass value="1"/>
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <inertia ixx="0.001021" ixy="0" ixz="0"
+       iyy="0.001021" iyz="0" izz="0.02"/>
+    </inertial>
+    
+    <collision name="link_right_wheel_collision">
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.05" radius="0.2"/>
+      </geometry>
+    </collision>
+    
+    <visual>
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.05" radius="0.2"/>
+      </geometry>
+    </visual>
+    
+  </link>
+  
+  
+  <joint name="joint_right_wheel" type="continuous">
+    <origin rpy="0 0 0" xyz="0 0.4 0.2"/>
+    <child link="link_right_wheel"/>
+    <parent link="link_chassis"/>
+    <axis rpy="0 0 0" xyz="0 0.2 0"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0.1" friction="0.1"/>
+  </joint>
+
+
+  <link name="link_left_wheel">
+    <inertial>
+      <mass value="1"/>
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <inertia ixx="0.001021" ixy="0" ixz="0"
+       iyy="0.001021" iyz="0" izz="0.02"/>
+    </inertial>
+    <collision name="link_left_wheel_collision">
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.05" radius="0.2"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.05" radius="0.2"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <joint name="joint_left_wheel" type="continuous">
+    <origin rpy="0 0 0" xyz="0 -0.4 0.2"/>
+    <child link="link_left_wheel"/>
+    <parent link="link_chassis"/>
+    <axis rpy="0 0 0" xyz="0 0.2 0"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0.1" friction="0.1"/>
+  </joint>
+ 
+ </robot>
+
+
